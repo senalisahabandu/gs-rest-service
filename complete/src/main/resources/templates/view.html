@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h3>Hi Dutchie try this shit!</h3>
+<form action="#" th:action="@{/view}" th:object="${onregelmatig}" method="post">
+    <p>infinitief: <input type="text" th:field="${onregelmatig.infinitief}" /></p>
+    <p>imperfectum: <input type="text" th:field="*{imperfectum}" /></p>
+    <p>perfectum: <input type="text" th:field="*{perfectum}" /></p>
+    <p>meaning: <input type="text" th:field="*{meaning}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>
