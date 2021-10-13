@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -17,6 +19,8 @@ public class OnregelmatigService {
     int perfectumScore = 0;
     int meaningScore = 0;
     int count = 0;
+    int start;
+    int end;
 
     public void resetScores() {
         wordMap = new HashMap<>();
@@ -47,7 +51,7 @@ public class OnregelmatigService {
 
         onregelmatig.setPerfectum(answer.getPerfectum() + "    " + onregelmatig.getPerfectum());
 
-        List<String> meanings = Arrays.asList(answer.getMeaning().split(","));
+        List<String> meanings = new LinkedList<String>(Arrays.asList(answer.getMeaning().split(",")));
         for (int i = 0; i < meanings.size(); i++) {
             if (meanings.get(i).contains("_")) {
                 meanings.add(meanings.remove(i).replaceAll("_", " "));
@@ -86,11 +90,13 @@ public class OnregelmatigService {
         return (int) (Math.random() * size);
     }
 
-    public void readFile(Integer startNum, Integer endNum) {
+    public void readFile(Integer startNum, Integer endNum) throws IOException, NullPointerException {
 
+        this.start = startNum;
+        this.end = endNum;
         try {
-            File myObj = new File("/Users/damminasahabandu/IdeaProjects/gs-rest-service/complete/src/main/resources/words");
-            Scanner myReader = new Scanner(myObj);
+            File myObj = new File("resources/words");
+            Scanner myReader = new Scanner(Paths.get(myObj.getAbsolutePath()));
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 String[] words = data.split(" ");
@@ -113,5 +119,13 @@ public class OnregelmatigService {
 
     public List<String> getKeys() {
         return keys;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
     }
 }

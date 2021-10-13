@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="form-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-3 col-md-6">
+                <div class="form-container">
+                    <h3 class="title">Hi Dutchie try this shit!</h3>
+                    <form action="#" th:action="@{/view}" th:object="${onregelmatig}" method="post" class="form-horizontal">
+                        <div class="form-group">
+                            <label>infinitief</label>
+                            <input type="text" th:field="${onregelmatig.infinitief}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>imperfectum</label>
+                            <input type="text" th:field="*{imperfectum}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>perfectum</label>
+                            <input type="text" th:field="*{perfectum}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>meaning</label>
+                            <input type="text" th:field="*{meaning}" class="form-control"/>
+                        </div>
+                        <p><input type="submit" value="Submit" class="btn signup"/> <input type="reset" value="Reset" /></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

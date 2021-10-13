@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Final Score!</h1>
+<p th:text="'infinitief: ' + ${onregelmatig.infinitief}" />
+<p th:text="'imperfectum: ' + ${onregelmatig.imperfectum}" />
+<p th:text="'perfectum: ' + ${onregelmatig.perfectum}" />
+<p th:text="'meaning: ' + ${onregelmatig.meaning}" />
+<p th:text="'content: ' + ${score}" />
+
+<p th:text="'content: ' + ${score}" />
+<a th:href="@{/view/{start}/{end}(start = ${start}, end = ${end})}">
+    <span th:text="'Next set'"></span>
+</a>
+</body>
+</html>
