@@ -1,6 +1,7 @@
 package com.example.restservice.service;
 
 import com.example.restservice.resource.Onregelmatig;
+import com.example.restservice.resource.User;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -12,46 +13,34 @@ import java.util.*;
 @Service
 public class OnregelmatigService {
 
-    Map<String, Onregelmatig> wordMap;
-    List<String> keys;
+    Map<String, User> sessionMap = new HashMap<>();
 
-    int imperfectumScore = 0;
-    int perfectumScore = 0;
-    int meaningScore = 0;
-    int count = 0;
-    int start;
-    int end;
-
-    public void resetScores() {
-        wordMap = new HashMap<>();
-        keys = new ArrayList<>();
-        imperfectumScore = 0;
-        perfectumScore = 0;
-        meaningScore = 0;
-        count = 0;
+    public void resetScores(String sessionId) {
+        sessionMap.put(sessionId, new User(sessionId));
     }
 
-    public String processAnswer(Onregelmatig onregelmatig) {
+    public String processAnswer(Onregelmatig onregelmatig, String sessionId) {
 
-        count++;
+        User user = sessionMap.get(sessionId);
+        user.setCount(user.getCount() + 1);
         String key = onregelmatig.getInfinitief();
-        Onregelmatig answer = wordMap.get(key);
+        Onregelmatig answer = user.getWordMap().get(key);
 
         System.out.println(key + ": ");
 
         if (onregelmatig.getImperfectum().equalsIgnoreCase(answer.getImperfectum())) {
-            imperfectumScore++;
+            user.setImperfectumScore(user.getImperfectumScore() + 1);
         }
 
         onregelmatig.setImperfectum(answer.getImperfectum() + "    " + onregelmatig.getImperfectum());
 
         if (onregelmatig.getPerfectum().equalsIgnoreCase(answer.getPerfectum())) {
-            perfectumScore++;
+            user.setPerfectumScore(user.getPerfectumScore() + 1);
         }
 
         onregelmatig.setPerfectum(answer.getPerfectum() + "    " + onregelmatig.getPerfectum());
 
-        List<String> meanings = new LinkedList<String>(Arrays.asList(answer.getMeaning().split(",")));
+        List<String> meanings = new LinkedList<>(Arrays.asList(answer.getMeaning().split(",")));
         for (int i = 0; i < meanings.size(); i++) {
             if (meanings.get(i).contains("_")) {
                 meanings.add(meanings.remove(i).replaceAll("_", " "));
@@ -59,23 +48,23 @@ public class OnregelmatigService {
         }
 
         if (meanings.contains(onregelmatig.getMeaning().toLowerCase())) {
-            meaningScore++;
+            user.setMeaningScore(user.getMeaningScore() + 1);
         }
         onregelmatig.setMeaning(answer.getMeaning() + "    " + onregelmatig.getMeaning());
 
-        return "Answered: " + count + " words\nScore imperfectum: "
-                + imperfectumScore*100.0/count + "% \nperfectum: "
-                + perfectumScore*100.0/count + "% \nmeaning: "
-                + meaningScore*100.0/count;
+        return "Answered: " + user.getCount() + " words\nScore imperfectum: "
+                + user.getImperfectumScore()*100.0/user.getCount() + "% \nperfectum: "
+                + user.getPerfectumScore()*100.0/user.getCount() + "% \nmeaning: "
+                + user.getMeaningScore()*100.0/user.getCount();
     }
 
-    public String getInfinitief() {
-        return keys.remove(getRandomNumber(keys.size()));
+    public String getInfinitief(String sessionId) {
+        return sessionMap.get(sessionId).getKeys().remove(getRandomNumber(sessionMap.get(sessionId).getKeys().size()));
     }
 
-    public Onregelmatig getOnregelmatig(String key) {
+    public Onregelmatig getOnregelmatig(String key, String sessionId) {
 
-        Onregelmatig answer = wordMap.get(key);
+        Onregelmatig answer = sessionMap.get(sessionId).getWordMap().get(key);
 
         Onregelmatig onregelmatig = new Onregelmatig();
         onregelmatig.setInfinitief(key);
@@ -90,10 +79,13 @@ public class OnregelmatigService {
         return (int) (Math.random() * size);
     }
 
-    public void readFile(Integer startNum, Integer endNum) throws IOException, NullPointerException {
+    public void readFile(Integer startNum, Integer endNum, String sessionId) throws IOException {
 
-        this.start = startNum;
-        this.end = endNum;
+        Map<String, Onregelmatig> wordMap = sessionMap.get(sessionId).getWordMap();
+        List<String> keys = sessionMap.get(sessionId).getKeys();
+        this.sessionMap.get(sessionId).setStart(startNum);
+        this.sessionMap.get(sessionId).setEnd(endNum);
+
         try {
             File myObj = new File("resources/words");
             Scanner myReader = new Scanner(Paths.get(myObj.getAbsolutePath()));
@@ -109,23 +101,24 @@ public class OnregelmatigService {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        if (startNum != null && endNum != null)
-            keys = keys.subList(startNum, endNum);
+        if (startNum != null && endNum != null) {
+            sessionMap.get(sessionId).setKeys(keys.subList(startNum, endNum));
+        }
     }
 
-    public Map<String, Onregelmatig> getWordMap() {
-        return wordMap;
+    public Map<String, User> getSessionMap() {
+        return sessionMap;
     }
 
-    public List<String> getKeys() {
-        return keys;
+    public List<String> getKeys(String sessionId) {
+        return sessionMap.get(sessionId).getKeys();
     }
 
-    public int getStart() {
-        return start;
+    public int getStart(String sessionId) {
+        return sessionMap.get(sessionId).getStart();
     }
 
-    public int getEnd() {
-        return end;
+    public int getEnd(String sessionId) {
+        return sessionMap.get(sessionId).getEnd();
     }
 }
