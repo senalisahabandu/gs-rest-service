@@ -7,10 +7,10 @@
 <body>
 <h1>Answer analysis</h1>
 <p th:text="'infinitief: ' + ${onregelmatig.infinitief}" />
-<p th:text="'imperfectum: ' + ${onregelmatig.imperfectum}" />
+<p th:style="${answer.imperfectum == 0 ? 'color: red;' : _ }" th:text="'imperfectum: ' + ${onregelmatig.imperfectum}" />
 <p th:text="'perfectum: ' + ${onregelmatig.perfectum}" />
 <p th:text="'meaning: ' + ${onregelmatig.meaning}" />
-<p th:text="'content: ' + ${score}" />
+<p th:text="'content: ' + ${answer.answer}" />
 <a href="/view">Submit another message</a>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+import com.example.restservice.resource.Answer;
 import com.example.restservice.resource.Onregelmatig;
 import com.example.restservice.resource.User;
 import org.springframework.stereotype.Service;
@@ -19,23 +20,24 @@ public class OnregelmatigService {
         sessionMap.put(sessionId, new User(sessionId));
     }
 
-    public String processAnswer(Onregelmatig onregelmatig, String sessionId) {
+    public Answer processAnswer(Onregelmatig onregelmatig, String sessionId) {
 
         User user = sessionMap.get(sessionId);
+        Answer answerObj = new Answer();
         user.setCount(user.getCount() + 1);
         String key = onregelmatig.getInfinitief();
         Onregelmatig answer = user.getWordMap().get(key);
 
-        System.out.println(key + ": ");
-
         if (onregelmatig.getImperfectum().equalsIgnoreCase(answer.getImperfectum())) {
             user.setImperfectumScore(user.getImperfectumScore() + 1);
+            answerObj.setImperfectum(true);
         }
 
         onregelmatig.setImperfectum(answer.getImperfectum() + "    " + onregelmatig.getImperfectum());
 
         if (onregelmatig.getPerfectum().equalsIgnoreCase(answer.getPerfectum())) {
             user.setPerfectumScore(user.getPerfectumScore() + 1);
+            answerObj.setPerfectum(true);
         }
 
         onregelmatig.setPerfectum(answer.getPerfectum() + "    " + onregelmatig.getPerfectum());
@@ -49,13 +51,16 @@ public class OnregelmatigService {
 
         if (meanings.contains(onregelmatig.getMeaning().toLowerCase())) {
             user.setMeaningScore(user.getMeaningScore() + 1);
+            answerObj.setMeaning(true);
         }
         onregelmatig.setMeaning(answer.getMeaning() + "    " + onregelmatig.getMeaning());
 
-        return "Answered: " + user.getCount() + " words\nScore imperfectum: "
+        answerObj.setAnswer("Answered: " + user.getCount() + " words\nScore imperfectum: "
                 + user.getImperfectumScore()*100.0/user.getCount() + "% \nperfectum: "
                 + user.getPerfectumScore()*100.0/user.getCount() + "% \nmeaning: "
-                + user.getMeaningScore()*100.0/user.getCount();
+                + user.getMeaningScore()*100.0/user.getCount());
+
+        return answerObj;
     }
 
     public String getInfinitief(String sessionId) {

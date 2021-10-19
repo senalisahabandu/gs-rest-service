@@ -1,5 +1,6 @@
 package com.example.restservice.controller;
 
+import com.example.restservice.resource.Answer;
 import com.example.restservice.resource.Onregelmatig;
 import com.example.restservice.service.OnregelmatigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +52,14 @@ public class OnregelmatigController {
     @PostMapping(value = "/view")
     public String submit(@ModelAttribute Onregelmatig onregelmatig, Model model, HttpServletRequest request) {
         String sessionId = request.getSession().getId();
+        Answer answer = onregelmatigService.processAnswer(onregelmatig, sessionId);
         model.addAttribute("onregelmatig", onregelmatig);
-        model.addAttribute("score", onregelmatigService.processAnswer(onregelmatig, sessionId));
+        model.addAttribute("answer", answer);
 
         if (onregelmatigService.getKeys(sessionId).size() == 0) {
             model.addAttribute("start", onregelmatigService.getEnd(sessionId));
-            System.out.println(model.getAttribute("start"));
             model.addAttribute("end", onregelmatigService.getEnd(sessionId) +
                     onregelmatigService.getEnd(sessionId) - onregelmatigService.getStart(sessionId));
-            System.out.println(model.getAttribute("end"));
             return "final";
         }
 

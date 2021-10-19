@@ -10,9 +10,8 @@
 <p th:text="'imperfectum: ' + ${onregelmatig.imperfectum}" />
 <p th:text="'perfectum: ' + ${onregelmatig.perfectum}" />
 <p th:text="'meaning: ' + ${onregelmatig.meaning}" />
-<p th:text="'content: ' + ${score}" />
-
-<p th:text="'content: ' + ${score}" />
+</br>
+<p th:text="'content: ' + ${answer.answer}" />
 <a th:href="@{/view/{start}/{end}(start = ${start}, end = ${end})}">
     <span th:text="'Next set'"></span>
 </a>
